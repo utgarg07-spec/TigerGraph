@@ -58,7 +58,7 @@ _TOOL_LABELS = {
 def _tool_label(name: str) -> str:
     return _TOOL_LABELS.get(name, "Gathering information")
 
-def run_react(ctx, llm, question, conversation=None) -> GraphRAGResponse:
+def run_react(ctx, llm, question, conversation=None, qtype=None) -> GraphRAGResponse:
     """Run the free tool-calling loop for one question and return a response."""
     emit = ctx.emit
     _cfg = ctx.graphrag_cfg or {}
@@ -72,6 +72,8 @@ def run_react(ctx, llm, question, conversation=None) -> GraphRAGResponse:
         f"## Question\n{question}\n\n"
         f"## Conversation\n{json.dumps(conversation or [])[:2000]}"
     )
+    if qtype:
+        user += f"\n\n## Question Type\n{qtype}"
     # Customizable system prompt (fixed rules + user "Additional Instructions");
     # the default lives in base_llm.
     system_prompt = llm.agentic_agent_prompt

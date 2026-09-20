@@ -148,11 +148,11 @@ async def stream_docs(
                 async with tg_sem:
                     res = await conn.runInstalledQuery(
                         "StreamDocContent",
-                        params={"doc": (d,)},
+                        params={"doc": (d, "Document")},
                     )
-                logger.debug(f"stream_docs writes '{d}' to docs")
-                await docs_chan.put(res[0]["DocContent"][0])
-                n_docs += 1
+                if res and isinstance(res, list) and res[0].get("DocContent"):
+                    await docs_chan.put(res[0]["DocContent"][0])
+                    n_docs += 1
             except Exception as e:
                 exc = traceback.format_exc()
                 logger.error(f"Error retrieving doc: '{d}' --> {e}\n{exc}")

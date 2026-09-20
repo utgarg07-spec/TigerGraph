@@ -85,6 +85,29 @@ class TgGetNeighborsArgs(BaseModel):
     limit: Optional[int] = Field(default=None, description="Max neighbors to return.")
 
 
+class LookupArgs(BaseModel):
+    event_title: str = Field(description="Full title or exact name of the Olympic event.")
+
+
+class AggregateArgs(BaseModel):
+    sport: str = Field(description="Name of the sport (e.g. 'biathlon', 'athletics').")
+    games: str = Field(description="Olympic games edition (e.g. '2018 Winter Olympics').")
+    threshold: int = Field(description="Competitors count threshold (e.g. 73).")
+
+
+class SuperlativeArgs(BaseModel):
+    sport: str = Field(description="Name of the sport (e.g. 'athletics', 'sailing').")
+    games: str = Field(description="Olympic games edition (e.g. '2008 Summer Olympics').")
+
+
+class TemporalResolveArgs(BaseModel):
+    event_name: str = Field(description="Name or description of the Olympic event (e.g. 'men\'s 20 kilometres walk').")
+    season: str = Field(description="Season of the Olympics: 'Summer' or 'Winter'.")
+    reference_year: int = Field(description="Reference year of the Olympics edition (e.g. 2016).")
+    direction: Optional[str] = Field(default="immediately before", description="Direction to resolve: 'immediately before' or 'immediately after'.")
+
+
+
 @dataclass
 class ToolSpec:
     """One callable tool the planner / react loop can dispatch.
@@ -220,6 +243,31 @@ try:
         logger.info("tigergraph-mcp read tools registered")
 except Exception as exc:  # pragma: no cover - import guard
     logger.info(f"tigergraph-mcp tools not registered: {exc}")
+
+
+def register_olympic_tools() -> None:
+    """Register the four deterministic Olympic tools into the agent planner catalog."""
+    from tools import olympic_tools as ot
+    _register(
+        "graphrag__lookup",
+        "Find the Olympic Event corresponding to the supplied event title and return its nations field.",
+        LookupArgs, ot.graphrag__lookup,
+    )
+    _register(
+        "graphrag__aggregate",
+        "Filter Olympic Event vertices by sport and games, count events where competitors > threshold.",
+        AggregateArgs, ot.graphrag__aggregate,
+    )
+    _register(
+        "graphrag__superlative",
+        "Filter Olympic Event vertices by sport and games and return the full title of the Event with maximum competitors.",
+        SuperlativeArgs, ot.graphrag__superlative,
+    )
+    _register(
+        "graphrag__temporal_resolve",
+        "Resolve the prior/related Olympic edition gold medal winner using graph prev_year/next_year links or sequence fallback.",
+        TemporalResolveArgs, ot.graphrag__temporal_resolve,
+    )
 
 
 def tool_names(ctx=None) -> list[str]:

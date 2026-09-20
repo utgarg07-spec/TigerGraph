@@ -20,6 +20,7 @@ from pydantic import BaseModel, Field
 
 class NaturalLanguageQuery(BaseModel):
     query: str
+    qtype: Optional[str] = None
     # Engine: "agentic" | "classic" | None (defer to graph config).
     mode: Optional[str] = None
     # Single menu value: agent style ("auto"|"planned"|"reactive") when agentic,

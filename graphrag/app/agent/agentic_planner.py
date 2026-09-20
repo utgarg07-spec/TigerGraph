@@ -91,7 +91,7 @@ def _sanitize(plan: Plan, ctx=None) -> Plan:
     return plan
 
 
-def plan_question(llm, question, conversation=None, schema_rep="", prior_results=None, ctx=None) -> Plan:
+def plan_question(llm, question, conversation=None, schema_rep="", prior_results=None, ctx=None, qtype=None) -> Plan:
     """Draft (or extend) a plan for ``question``.
 
     ``prior_results`` (a list of ``StepResult``-like dicts) is supplied on
@@ -106,6 +106,8 @@ def plan_question(llm, question, conversation=None, schema_rep="", prior_results
         f"## Question\n{question}",
         f"## Conversation\n{json.dumps(conversation or [])[:2000]}",
     ]
+    if qtype:
+        user_parts.append(f"## Question Type\n{qtype}")
     # Schema is normally not pre-loaded (the query tools load it themselves);
     # include it only if a caller explicitly supplied one.
     if schema_rep:

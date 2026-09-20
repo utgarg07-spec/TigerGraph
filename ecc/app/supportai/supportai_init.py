@@ -59,11 +59,11 @@ async def stream_docs(
                     async with tg_sem:
                         res = await conn.runInstalledQuery(
                             "StreamDocContent",
-                            # 1-tuple form for VERTEX<T> params.
-                            params={"doc": (d,)},
+                            params={"doc": (d, "Document")},
                         )
-                    logger.info("stream_docs writes to docs")    
-                    await docs_chan.put(res[0]["DocContent"][0])
+                    if res and isinstance(res, list) and res[0].get("DocContent"):
+                        logger.info("stream_docs writes to docs")
+                        await docs_chan.put(res[0]["DocContent"][0])
                 except Exception as e:
                     exc = traceback.format_exc()
                     logger.error(f"Error retrieveing doc: {d} --> {e}\n{exc}")

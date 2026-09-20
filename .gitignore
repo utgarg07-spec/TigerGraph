@@ -13,8 +13,17 @@ __pycache__/
 
 # Node
 /node_modules/
-/package.json
-/package-lock.json
 
 # Release docs
 /RELEASE_NOTES.md
+
+# Local Configuration
+configs/local_server_config.json
+.env
+.env.*
+
+# Private benchmark
+/data/eval_hidden.jsonl
+
+# Temporary development files
+/scratch/

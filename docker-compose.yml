@@ -13,7 +13,7 @@ services:
       - chat-history
 #      - tigergraph
     environment:
-      SERVER_CONFIG: "/code/configs/server_config.json"
+      SERVER_CONFIG: "/code/configs/local_server_config.json"
       LOGLEVEL: "INFO"
       USE_CYPHER: "true"
     volumes:
@@ -29,7 +29,7 @@ services:
     ports:
       - 8001:8001
     environment:
-      SERVER_CONFIG: "/code/configs/server_config.json"
+      SERVER_CONFIG: "/code/configs/local_server_config.json"
       LOGLEVEL: "INFO"
       INIT_EMBED_STORE: "false"
     volumes:
@@ -45,7 +45,7 @@ services:
     ports:
       - 8002:8002
     environment:
-      CONFIG_FILES: "/configs/server_config.json"
+      CONFIG_FILES: "/configs/local_server_config.json"
       LOGLEVEL: "INFO"
     volumes:
       - ./configs/:/configs

@@ -137,7 +137,7 @@ class AgenticAgent:
             self.q.put(msg)
 
     def question_for_agent(
-        self, question: str, conversation: List[Dict[str, str]] = None
+        self, question: str, conversation: List[Dict[str, str]] = None, qtype: str = None
     ):
         start_time = time.time()
         metrics.llm_inprogress_requests.labels(self.model_name).inc()
@@ -238,10 +238,10 @@ class AgenticAgent:
             style = _resolve_style(self.agent_style, config_style)
             try:
                 if style == "planned":
-                    answer = run_agentic(ctx, self.llm, question, convo)
+                    answer = run_agentic(ctx, self.llm, question, convo, qtype=qtype)
                 else:
                     # "reactive" (UI) / "react" (config) -> free tool-calling loop
-                    answer = run_react(ctx, self.llm, question, convo)
+                    answer = run_react(ctx, self.llm, question, convo, qtype=qtype)
             except Exception as run_exc:
                 # Runtime backstop (GML-2169): if the model turns out not to
                 # support tool-calling, disable Agentic for it and answer via the
@@ -264,7 +264,7 @@ class AgenticAgent:
                     self.conn.graphname, self.conn, self.use_cypher,
                     ws=self._ws, mode="classic",
                 )
-                return classic.question_for_agent(question, conversation)
+                return classic.question_for_agent(question, conversation, qtype=qtype)
 
             # Aggregate usage across all LLM calls in this run for the UI.
             usage = get_collected_usage() or []

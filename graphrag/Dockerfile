@@ -3,7 +3,7 @@ WORKDIR /code
 
 COPY common/requirements.txt requirements.txt
 
-RUN apt-get update && apt-get upgrade -y
+RUN apt-get update
 RUN pip install -r requirements.txt
 
 COPY graphrag/app /code

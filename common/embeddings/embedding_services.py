@@ -195,7 +195,11 @@ class GenAI_Embedding(EmbeddingModel):
     def __init__(self, config):
         super().__init__(config, model_name=config.get("model_name", "gemini-embedding-exp-03-07"))
 
-        self.embeddings = GoogleGenerativeAIEmbeddings(model=self.model_name)
+        kwargs = {"model": self.model_name}
+        if "output_dimensionality" in config:
+            kwargs["output_dimensionality"] = config["output_dimensionality"]
+
+        self.embeddings = GoogleGenerativeAIEmbeddings(**kwargs)
 
 
 class AWS_Bedrock_Embedding(EmbeddingModel):

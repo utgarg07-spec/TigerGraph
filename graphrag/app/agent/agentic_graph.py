@@ -55,7 +55,7 @@ def _hybrid_fallback_step() -> PlanStep:
     )
 
 
-def run_agentic(ctx, llm, question, conversation=None) -> GraphRAGResponse:
+def run_agentic(ctx, llm, question, conversation=None, qtype=None) -> GraphRAGResponse:
     """Run the agentic workflow for one question and return a response.
 
     ``ctx`` is a ``GraphRAGToolContext`` (carries the per-user conn, the
@@ -78,7 +78,7 @@ def run_agentic(ctx, llm, question, conversation=None) -> GraphRAGResponse:
     # plan (timed + usage-attributed for the trace)
     _u0 = len(get_collected_usage() or [])
     _t0 = time.time()
-    plan = plan_question(llm, question, conversation, ctx=ctx)
+    plan = plan_question(llm, question, conversation, ctx=ctx, qtype=qtype)
     agent_steps.append({
         "node": "plan", "kind": "plan",
         "duration_s": round(time.time() - _t0, 3),
@@ -124,7 +124,7 @@ def run_agentic(ctx, llm, question, conversation=None) -> GraphRAGResponse:
         ]
         _u0 = len(get_collected_usage() or [])
         _t0 = time.time()
-        plan = plan_question(llm, question, conversation, prior_results=prior, ctx=ctx)
+        plan = plan_question(llm, question, conversation, prior_results=prior, ctx=ctx, qtype=qtype)
         agent_steps.append({
             "node": f"replan {replans}", "kind": "plan",
             "duration_s": round(time.time() - _t0, 3),

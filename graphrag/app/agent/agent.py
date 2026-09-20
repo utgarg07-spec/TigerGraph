@@ -90,7 +90,7 @@ class TigerGraphAgent:
         logger.debug(f"request_id={req_id_cv.get()} agent initialized")
 
     def question_for_agent(
-        self, question: str, conversation: List[Dict[str, str]] = None
+        self, question: str, conversation: List[Dict[str, str]] = None, qtype: str = None
     ):
         """Question for Agent.
 

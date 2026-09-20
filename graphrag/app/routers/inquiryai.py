@@ -98,7 +98,7 @@ def retrieve_answer(
         natural_language_response="", answered_question=False, response_type="inquiryai"
     )
     try:
-        resp = agent.question_for_agent(query.query)
+        resp = agent.question_for_agent(query.query, qtype=query.qtype)
         # Note: tg:// protocol conversion happens in agent_graph.py
         pmetrics.llm_success_response_total.labels(get_embedding_service().model_name).inc()
     except MapQuestionToSchemaException:
@@ -172,7 +172,7 @@ def retrieve_answer_with_chathistory(
 
         logger.info(f"latest 3 pairs of queries: {latest_history_query}")
 
-        resp = agent.question_for_agent(query.query, latest_history_query)
+        resp = agent.question_for_agent(query.query, latest_history_query, qtype=query.qtype)
         
         # Convert tg:// protocol URLs to endpoint URLs for UI display
         if resp.natural_language_response and "(tg://" in resp.natural_language_response:
