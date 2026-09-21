@@ -21,7 +21,7 @@ def _process_id(v_id: str) -> str:
     has_func = re.compile(r"(.*)\(").findall(v_id)
     if has_func:
         v_id = has_func[0]
-    v_id = v_id.replace(" ", "_").lower().replace("/", "_").replace("(", "").replace(")", "")
+    v_id = v_id.replace(" ", "_").replace("/", "_").replace("(", "").replace(")", "")
     if v_id in ("''", '""'):
         return ""
     return v_id
